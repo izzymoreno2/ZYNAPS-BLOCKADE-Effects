@@ -1,0 +1,93 @@
+unit Unit1;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  ExtCtrls, Math;
+
+type
+  TForm1 = class(TForm)
+    Image1: TImage;
+    Timer1: TTimer;
+    procedure FormCreate(Sender: TObject);
+    procedure MoveStars(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form1: TForm1;
+
+starsx:array [1..400] of integer;
+starsy:array [1..400] of integer;
+move:array [1..400] of integer;
+xmin,ymin,xmax,ymax: integer;
+
+implementation
+
+{$R *.DFM}
+
+procedure TForm1.FormCreate(Sender: TObject);
+var
+i: word;
+begin
+Randomize;
+xmin:=0;
+ymin:=0;
+xmax:=Form1.Image1.Width;
+ymax:=Form1.Image1.Height;
+Form1.Image1.Canvas.Brush.Color:=clblack;
+Form1.Image1.Canvas.FillRect(Rect(xmin,ymin,xmax,ymax));
+Form1.Image1.Canvas.Pen.Color:=clwhite;
+For i:=1 to 400 do
+   begin
+   starsx[i]:=random(640);
+   starsy[i]:=random(480);
+   if (i>0) and (i<=100) then
+      begin
+      move[i]:=1;
+      end;
+   if (i>100) and (i<=200) then
+      begin
+      move[i]:=2;
+      end;
+   if (i>200) and (i<=300) then
+      begin
+      move[i]:=3;
+      end;
+   if (i>300) and (i<=400) then
+      begin
+      move[i]:=4;
+      end;
+   Form1.Image1.Canvas.MoveTo(starsx[i],starsy[i]);
+   Form1.Image1.Canvas.LineTo(starsx[i],starsy[i]+1);
+   end;
+end;
+
+procedure TForm1.MoveStars(Sender: TObject);
+var
+i:integer;
+begin
+For i:=1 to 400 do
+   begin
+   starsx[i]:=starsx[i]-move[i];
+   Form1.Image1.Canvas.Pen.Color:=clwhite;
+   Form1.Image1.Canvas.MoveTo(starsx[i],starsy[i]);
+   Form1.Image1.Canvas.LineTo(starsx[i],starsy[i]+1);
+   Form1.Image1.Canvas.Pen.Color:=clblack;
+   Form1.Image1.Canvas.MoveTo(starsx[i]+move[i],starsy[i]);
+   Form1.Image1.Canvas.LineTo(starsx[i]+move[i],starsy[i]+2);
+   If starsx[i]<=0 then
+      begin
+      starsx[i]:=640;
+      Form1.Image1.Canvas.Pen.Color:=clblack;
+      Form1.Image1.Canvas.MoveTo(0,starsy[i]);
+      Form1.Image1.Canvas.LineTo(0,starsy[i]);
+      end;
+   end;
+end;
+
+end.
